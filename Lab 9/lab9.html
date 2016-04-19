@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">        
+        <title>Kolejne potęgi</title>
+		<meta name="author" content="Labuda Łukasz" />
+    </head>
+<body>
+    
+	<p>Jaką liczbę podnieśc do potęgi? <input type="number" id="potega" value = 1></p>
+	<p>Ile kolejnych potęg wyświetlic? <input type="number" id="ilosc" value = 1></p>
+	<button onclick="Wyswietl()">Wyświetl</button>	
+	<button onclick="Usun()">Wyczyść</button>
+	<p><output id="result"></output> </p>
+    <script>
+	function Wyswietl() {
+		var praca = new Worker("potegi.js");
+		var potega = document.getElementById("potega");
+		var ilosc = document.getElementById("ilosc");
+		praca.postMessage([potega.value, ilosc.value]);
+		var wartosc = 0;
+		document.getElementById('result').innerText = " ";
+		praca.onmessage = function(event) {
+			for (value in event.data.result) {
+				document.getElementById('result').innerText += potega.value +" do potęgi "+ wartosc+ " = " + event.data.result[value] + " \n " ;
+				wartosc = wartosc + 1 ;
+			}		
+		}
+		praca.onerror = function(event) {
+		alert("Wystąpił błąd podczas liczenia");		
+		}
+	}
+	function Usun() {	
+	document.getElementById('result').innerText = " ";
+	}
+    </script>
+</body>
+</html>
